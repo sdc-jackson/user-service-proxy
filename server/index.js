@@ -10,6 +10,7 @@ var PORT_USERS = 5007;
 
 var app = express();
 app.use(express.static(__dirname + '/../client/dist'));
+
 app.use('/rooms/:id', express.static(__dirname + '/../client/dist'));
 
 
