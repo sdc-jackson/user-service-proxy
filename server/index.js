@@ -9,8 +9,10 @@ var PORT_PHOTOS = 5005;
 var PORT_USERS = 5007;
 
 var app = express();
-//app.use(express.static(__dirname + '/../client/dist'));
+app.use(express.static(__dirname + '/../client/dist'));
 app.use('/rooms/:id', express.static(__dirname + '/../client/dist'));
+
+
 
 app.get('/rooms/:id/availableDates', (req, res) => {
   axios.get(`http://localhost:${PORT_AVAILABILITY}/rooms/${req.params.id}/availableDates`)
@@ -35,6 +37,8 @@ app.get('/users/:id/', (req, res) => {
     res.send(usersRes.data);
   })
 })
+
+app.get('/')
 
 // app.get('/rooms/:id/getPhotosByRoomId?roomId=100')
 
