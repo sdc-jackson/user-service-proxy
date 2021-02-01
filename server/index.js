@@ -39,23 +39,16 @@ app.get('/users/:id/', (req, res) => {
   })
 })
 
-app.get('/')
-
-// app.get('/rooms/:id/getPhotosByRoomId?roomId=100')
 
 
+app.get('/rooms/:id/getPhotosByRoomId', (req, res) => {
+  axios.get(`http://localhost:${PORT_PHOTOS}/rooms/${req.params.id}/getPhotosByRoomId`)
+  .then( (photosRes) => {
+    console.log('got GET to getPhotosByRoomId', photosRes.data);
+    res.send(photosRes.data);
+  })
+})
 
-// app.get('/rooms/:id', (req, res) => {
-//   roomId = req.params.id;
-//   axios.get(`http://localhost:5001/rooms/${roomId}`)
-//   .then(function (availabilityResponse) {
-//     console.log('existing res object', res);
-//     console.log('hi', availabilityResponse);
-//     res.writeHead(200);
-//     res.write(availabilityResponse.data);
-//     res.end();
-//   })
-// })
 
 console.log(`listening on port ${PORT}`);
 app.listen(PORT);
