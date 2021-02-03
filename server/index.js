@@ -7,6 +7,7 @@ var PORT = 5000;
 var PORT_AVAILABILITY = 5001;
 var PORT_PHOTOS = 5005;
 var PORT_USERS = 5007;
+var PORT_SUMMARY = 5002;
 
 var app = express();
 app.use(express.static(__dirname + '/../client/dist'));
@@ -40,6 +41,13 @@ app.get('/users/:id/', (req, res) => {
 })
 
 
+app.get('/rooms/:id/summary', (req, res) => {
+  axios.get(`http://localhost:${PORT_SUMMARY}/rooms/${req.params.id}/summary`)
+  .then( (summaryRes) => {
+    console.log('got GET to summary', summaryRes.data);
+    res.send(summaryRes.data);
+  })
+})
 
 app.get('/rooms/:id/getPhotosByRoomId', (req, res) => {
   axios.get(`http://localhost:${PORT_PHOTOS}/rooms/${req.params.id}/getPhotosByRoomId`)
