@@ -29,8 +29,25 @@ app.get('/bundle_availability.js', (req, res, next) => {
     console.log('got a request to availability bundle');
     res.send(availabilityBundle.data);
   })
+  .catch((err) => {
+    console.log('error getting availability bundle');
+    res.send(404);
+  })
 })
 
+app.get('/users.js', (req, res, next) => {
+  console.log('requesting users bundle');
+  axios.get('https://fec-gnocchi-user-profile.s3-us-west-2.amazonaws.com/users.js')
+  .then( (usersBundle) => {
+    console.log('got a request to users bundle');
+    res.send(usersBundle.data);
+  })
+  .catch((err) => {
+    console.log('error getting users bundle');
+    res.sendStatus(404);
+
+  })
+})
 
 
 app.get('/rooms/:id/availableDates', (req, res) => {
@@ -38,6 +55,10 @@ app.get('/rooms/:id/availableDates', (req, res) => {
   .then( (availableDatesRes) => {
     //console.log('got GET to availableDates', availableDatesRes.data);
     res.send(availableDatesRes.data);
+  })
+  .catch( (err) => {
+    console.log('could not GET available dates');
+    res.sendStatus(404);
   })
 });
 
@@ -47,6 +68,10 @@ app.get('/rooms/:id/minNightlyRate', (req, res) => {
     //console.log('got GET to minNightlyRate', minRateRes.data);
     res.send(minRateRes.data);
   })
+  .catch((err) => {
+    console.log('could not GET nightly rate');
+    res.sendStatus(404);
+  })
 })
 
 app.get('/users/:id/', (req, res) => {
@@ -54,6 +79,10 @@ app.get('/users/:id/', (req, res) => {
   .then( (usersRes) => {
     //console.log('got GET to users', usersRes.data);
     res.send(usersRes.data);
+  })
+  .catch((err) => {
+    console.log('could not GET user data');
+    res.sendStatus(404);
   })
 })
 
@@ -64,6 +93,10 @@ app.get('/rooms/:id/summary', (req, res) => {
     //console.log('got GET to summary', summaryRes.data);
     res.send(summaryRes.data);
   })
+  .catch((err) => {
+    console.log('could not GET summary info');
+    res.sendStatus(404);
+  })
 })
 
 app.get('/rooms/:id/getPhotosByRoomId', (req, res) => {
@@ -71,6 +104,10 @@ app.get('/rooms/:id/getPhotosByRoomId', (req, res) => {
   .then( (photosRes) => {
     //console.log('got GET to getPhotosByRoomId', photosRes.data);
     res.send(photosRes.data);
+  })
+  .catch((err) => {
+    console.log('could not GET photos by room id')
+    res.sendStatus(404);
   })
 })
 
