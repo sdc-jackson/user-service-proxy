@@ -4,6 +4,12 @@ var cors = require('cors');
 var path = require('path');
 var axios = require('axios');
 require('dotenv');
+
+var exampleAvailableDates = require('./exampleData/exampleAvailableDates.js');
+var examplePhotos = require('./exampleData/examplePhotos.js');
+var exampleUser = require('./exampleData/exampleUser.js');
+var exampleSummary = require('./exampleData/exampleSummary.js');
+
 var PORT = 5000;
 var PORT_AVAILABILITY = 5001;
 var PORT_PHOTOS = 5005;
@@ -18,6 +24,7 @@ SUMMARY_API_URL = USE_LOCAL ? `http://localhost:${PORT_SUMMARY}` : `http://local
 
 
 var app = express();
+app.use(cors());
 app.use(express.static(__dirname + '/../client/dist'));
 
 app.use('/rooms/:id', express.static(__dirname + '/../client/dist'));
@@ -58,7 +65,7 @@ app.get('/rooms/:id/availableDates', (req, res) => {
   })
   .catch( (err) => {
     console.log('could not GET available dates');
-    res.sendStatus(404);
+    res.send(exampleAvailableDates.exampleData);
   })
 });
 
@@ -70,7 +77,7 @@ app.get('/rooms/:id/minNightlyRate', (req, res) => {
   })
   .catch((err) => {
     console.log('could not GET nightly rate');
-    res.sendStatus(404);
+    res.send({minNightlyRate: 434});
   })
 })
 
@@ -82,7 +89,7 @@ app.get('/users/:id/', (req, res) => {
   })
   .catch((err) => {
     console.log('could not GET user data');
-    res.sendStatus(404);
+    res.send(exampleUser.exampleUser);
   })
 })
 
@@ -95,7 +102,7 @@ app.get('/rooms/:id/summary', (req, res) => {
   })
   .catch((err) => {
     console.log('could not GET summary info');
-    res.sendStatus(404);
+    res.send(exampleSummary.exampleSummary);
   })
 })
 
@@ -107,7 +114,7 @@ app.get('/rooms/:id/getPhotosByRoomId', (req, res) => {
   })
   .catch((err) => {
     console.log('could not GET photos by room id')
-    res.sendStatus(404);
+    res.send(examplePhotos.examplePhotos);
   })
 })
 
