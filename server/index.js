@@ -3,7 +3,12 @@ var bodyParser = require('body-parser');
 var cors = require('cors');
 var path = require('path');
 var axios = require('axios');
+const CancelToken = axios.CancelToken;
 require('dotenv');
+
+
+
+
 
 var exampleAvailableDates = require('./exampleData/exampleAvailableDates.js');
 var examplePhotos = require('./exampleData/examplePhotos.js');
@@ -16,6 +21,13 @@ var PORT_PHOTOS = 5005;
 var PORT_USERS = 5007;
 var PORT_SUMMARY = 5002;
 var USE_LOCAL = false;
+var AXIOS_TIMEOUT = 2000;
+
+var source = CancelToken.source();
+
+setTimeout(() => {
+  source.cancel();
+}, AXIOS_TIMEOUT);
 
 AVAILABILITY_API_URL = USE_LOCAL ? `http://localhost:${PORT_AVAILABILITY}` : `http://ec2-54-149-117-186.us-west-2.compute.amazonaws.com:5001`;
 USERS_API_URL = USE_LOCAL ? `http://localhost:${PORT_USERS}` : `http://ec2-34-210-111-179.us-west-2.compute.amazonaws.com:5007`;
@@ -31,7 +43,7 @@ app.use('/rooms/:id', express.static(__dirname + '/../client/dist'));
 
 app.get('/bundle_availability.js', (req, res, next) => {
   console.log('requesting availability bundle');
-  axios.get('https://availability-bundle.s3-us-west-2.amazonaws.com/bundle_availability.js')
+  axios.get('https://availability-bundle.s3-us-west-2.amazonaws.com/bundle_availability.js', {cancelToken: source.token})
   .then( (availabilityBundle) => {
     console.log('got a request to availability bundle');
     res.send(availabilityBundle.data);
@@ -44,7 +56,7 @@ app.get('/bundle_availability.js', (req, res, next) => {
 
 app.get('/users.js', (req, res, next) => {
   console.log('requesting users bundle');
-  axios.get('https://fec-gnocchi-user-profile.s3-us-west-2.amazonaws.com/users.js')
+  axios.get('https://fec-gnocchi-user-profile.s3-us-west-2.amazonaws.com/users.js', {cancelToken: source.token})
   .then( (usersBundle) => {
     console.log('got a request to users bundle');
     res.send(usersBundle.data);
@@ -58,9 +70,8 @@ app.get('/users.js', (req, res, next) => {
 
 
 app.get('/rooms/:id/availableDates', (req, res) => {
-  axios.get(`${AVAILABILITY_API_URL}/rooms/${req.params.id}/availableDates`)
+  axios.get(`${AVAILABILITY_API_URL}/rooms/${req.params.id}/availableDates`, {cancelToken: source.token})
   .then( (availableDatesRes) => {
-    //console.log('got GET to availableDates', availableDatesRes.data);
     res.send(availableDatesRes.data);
   })
   .catch( (err) => {
@@ -70,9 +81,8 @@ app.get('/rooms/:id/availableDates', (req, res) => {
 });
 
 app.get('/rooms/:id/minNightlyRate', (req, res) => {
-  axios.get(`${AVAILABILITY_API_URL}/rooms/${req.params.id}/minNightlyRate`)
+  axios.get(`${AVAILABILITY_API_URL}/rooms/${req.params.id}/minNightlyRate`, {cancelToken: source.token})
   .then( (minRateRes) => {
-    //console.log('got GET to minNightlyRate', minRateRes.data);
     res.send(minRateRes.data);
   })
   .catch((err) => {
@@ -82,12 +92,12 @@ app.get('/rooms/:id/minNightlyRate', (req, res) => {
 })
 
 app.get('/users/:id/', (req, res) => {
-  axios.get(`${USERS_API_URL}/users/${req.params.id}`)
+  axios.get(`${USERS_API_URL}/users/${req.params.id}`, {cancelToken: source.token})
   .then( (usersRes) => {
-    //console.log('got GET to users', usersRes.data);
     res.send(usersRes.data);
   })
   .catch((err) => {
+    console.log(err)
     console.log('could not GET user data');
     res.send(exampleUser.exampleUser);
   })
@@ -95,9 +105,8 @@ app.get('/users/:id/', (req, res) => {
 
 
 app.get('/rooms/:id/summary', (req, res) => {
-  axios.get(`${SUMMARY_API_URL}/rooms/${req.params.id}/summary`)
+  axios.get(`${SUMMARY_API_URL}/rooms/${req.params.id}/summary`, {cancelToken: source.token})
   .then( (summaryRes) => {
-    //console.log('got GET to summary', summaryRes.data);
     res.send(summaryRes.data);
   })
   .catch((err) => {
@@ -107,9 +116,8 @@ app.get('/rooms/:id/summary', (req, res) => {
 })
 
 app.get('/rooms/:id/getPhotosByRoomId', (req, res) => {
-  axios.get(`${PHOTOS_API_URL}/rooms/${req.params.id}/getPhotosByRoomId`)
+  axios.get(`${PHOTOS_API_URL}/rooms/${req.params.id}/getPhotosByRoomId`, {cancelToken: source.token})
   .then( (photosRes) => {
-    //console.log('got GET to getPhotosByRoomId', photosRes.data);
     res.send(photosRes.data);
   })
   .catch((err) => {
