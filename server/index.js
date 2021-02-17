@@ -31,8 +31,8 @@ setTimeout(() => {
 
 AVAILABILITY_API_URL = USE_LOCAL ? `http://localhost:${PORT_AVAILABILITY}` : `http://ec2-54-149-117-186.us-west-2.compute.amazonaws.com:5001`;
 USERS_API_URL = USE_LOCAL ? `http://localhost:${PORT_USERS}` : `http://ec2-34-210-111-179.us-west-2.compute.amazonaws.com:5007`;
-PHOTOS_API_URL = USE_LOCAL ? `http://localhost:${PORT_PHOTOS}` : `http://localhost:${PORT_PHOTOS}`; //update later
-SUMMARY_API_URL = USE_LOCAL ? `http://localhost:${PORT_SUMMARY}` : `http://localhost:${PORT_SUMMARY}`; //update later
+PHOTOS_API_URL = USE_LOCAL ? `http://localhost:${PORT_PHOTOS}` : `http://ec2-18-191-199-80.us-east-2.compute.amazonaws.com:5005`; //update later
+SUMMARY_API_URL = USE_LOCAL ? `http://localhost:${PORT_SUMMARY}` : `http://ec2-54-149-117-186.us-west-2.compute.amazonaws.com:5002/`; //update later
 
 
 var app = express();
@@ -54,6 +54,19 @@ app.get('/bundle_availability.js', (req, res, next) => {
   })
 })
 
+app.get('/summary.js', (req, res, next) => {
+  console.log('requesting summary bar bundle');
+  axios.get('https://summarybundle-mockairbnb.s3-us-west-2.amazonaws.com/summary.js', {cancelToken: source.token})
+  .then( (summaryBundle) => {
+    console.log('got a request to users bundle');
+    res.send(summaryBundle.data);
+  })
+  .catch((err) => {
+    console.log('error getting summary bundle');
+    res.sendStatus(404);
+  })
+})
+
 app.get('/users.js', (req, res, next) => {
   console.log('requesting users bundle');
   axios.get('https://fec-gnocchi-user-profile.s3-us-west-2.amazonaws.com/users.js', {cancelToken: source.token})
@@ -68,6 +81,19 @@ app.get('/users.js', (req, res, next) => {
   })
 })
 
+app.get('/photos.js', (req, res, next) => {
+  console.log('requesting photos bundle');
+  axios.get('https://react-bundles.s3.us-east-2.amazonaws.com/photos-service.js', {cancelToken: source.token})
+  .then( (photosBundle) => {
+    console.log('got a request to users bundle');
+    res.send(photosBundle.data);
+  })
+  .catch((err) => {
+    console.log('error getting photos bundle');
+    res.sendStatus(404);
+
+  })
+})
 
 app.get('/rooms/:id/availableDates', (req, res) => {
   axios.get(`${AVAILABILITY_API_URL}/rooms/${req.params.id}/availableDates`, {cancelToken: source.token})
