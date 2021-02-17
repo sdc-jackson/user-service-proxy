@@ -21,7 +21,7 @@ var PORT_PHOTOS = 5005;
 var PORT_USERS = 5007;
 var PORT_SUMMARY = 5002;
 var USE_LOCAL = false;
-var AXIOS_TIMEOUT = 2000;
+var AXIOS_TIMEOUT = 5000;
 
 var source = CancelToken.source();
 
@@ -32,7 +32,7 @@ setTimeout(() => {
 AVAILABILITY_API_URL = USE_LOCAL ? `http://localhost:${PORT_AVAILABILITY}` : `http://ec2-54-149-117-186.us-west-2.compute.amazonaws.com:5001`;
 USERS_API_URL = USE_LOCAL ? `http://localhost:${PORT_USERS}` : `http://ec2-34-210-111-179.us-west-2.compute.amazonaws.com:5007`;
 PHOTOS_API_URL = USE_LOCAL ? `http://localhost:${PORT_PHOTOS}` : `http://ec2-18-191-199-80.us-east-2.compute.amazonaws.com:5005`; //update later
-SUMMARY_API_URL = USE_LOCAL ? `http://localhost:${PORT_SUMMARY}` : `http://ec2-54-149-117-186.us-west-2.compute.amazonaws.com:5002/`; //update later
+SUMMARY_API_URL = USE_LOCAL ? `http://localhost:${PORT_SUMMARY}` : `http://ec2-54-149-117-186.us-west-2.compute.amazonaws.com:5002`; //update later
 
 
 var app = express();
