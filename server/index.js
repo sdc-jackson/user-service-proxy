@@ -49,7 +49,7 @@ app.get('/bundle_availability.js', (req, res, next) => {
     res.send(availabilityBundle.data);
   })
   .catch((err) => {
-    console.log('error getting availability bundle');
+    console.log(err, 'error getting availability bundle');
     res.send(404);
   })
 })
@@ -62,7 +62,7 @@ app.get('/summary.js', (req, res, next) => {
     res.send(summaryBundle.data);
   })
   .catch((err) => {
-    console.log('error getting summary bundle');
+    console.log(err, 'error getting summary bundle');
     res.sendStatus(404);
   })
 })
@@ -75,7 +75,7 @@ app.get('/users.js', (req, res, next) => {
     res.send(usersBundle.data);
   })
   .catch((err) => {
-    console.log('error getting users bundle');
+    console.log(err, 'error getting users bundle');
     res.sendStatus(404);
 
   })
@@ -89,7 +89,7 @@ app.get('/photos.js', (req, res, next) => {
     res.send(photosBundle.data);
   })
   .catch((err) => {
-    console.log('error getting photos bundle');
+    console.log(err, 'error getting photos bundle');
     res.sendStatus(404);
 
   })
@@ -101,7 +101,7 @@ app.get('/rooms/:id/availableDates', (req, res) => {
     res.send(availableDatesRes.data);
   })
   .catch( (err) => {
-    console.log('could not GET available dates');
+    console.log(err, 'could not GET available dates');
     res.send(exampleAvailableDates.exampleData);
   })
 });
@@ -112,7 +112,7 @@ app.get('/rooms/:id/minNightlyRate', (req, res) => {
     res.send(minRateRes.data);
   })
   .catch((err) => {
-    console.log('could not GET nightly rate');
+    console.log(err, 'could not GET nightly rate');
     res.send({minNightlyRate: 434});
   })
 })
@@ -136,7 +136,7 @@ app.get('/rooms/:id/summary', (req, res) => {
     res.send(summaryRes.data);
   })
   .catch((err) => {
-    console.log('could not GET summary info');
+    console.log(err, 'could not GET summary info');
     res.send(exampleSummary.exampleSummary);
   })
 })
@@ -147,7 +147,7 @@ app.get('/rooms/:id/getPhotosByRoomId', (req, res) => {
     res.send(photosRes.data);
   })
   .catch((err) => {
-    console.log('could not GET photos by room id')
+    console.log(err, 'could not GET photos by room id')
     res.send(examplePhotos.examplePhotos);
   })
 })
