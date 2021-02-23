@@ -2,32 +2,71 @@
 <html>
 <head>
   <title>AirBnB</title>
+<style>
+.column {
+float:left;
+}
+.left {
+width: 60%;
+}
+.right {
+width: 40%;
+position:sticky;
+top:0;
+
+}
+.columns-container{
+clear:both;
+width:100%;
+height:800px;
+}
+.user-container{
+        float:left;
+        clear:both;
+
+}
+.photo-container{
+        clear:both;
+
+}
+
+</style>
 </head>
 
+
 <body>
+
+<div class='photo-container'>
   <div id='main'></div>
-  <div id='summaryBar'></div>
-  <div id='availabilityApp1'></div>
-  <div id='users'></div>
-  <div id='availabilityApp2'></div>
+</div>
+<div class='columns-container'>
+        <div class='column left'>
+                <div id='summaryBar'></div>
+                <div id='availabilityApp2'></div>
+        </div>
+        <div class='column right'>
+                <div id='availabilityApp1'></div>
+        </div>
+</div>
+<div class='user-container'>
+        <div id='users'></div>
+</div>
 
 
+<script src='http://ec2-35-166-241-225.us-west-2.compute.amazonaws.com:5000/users.js' crossorigin="anonymous"></script>
+<script src='http://ec2-35-166-241-225.us-west-2.compute.amazonaws.com:5000/bundle_availability.js' crossorigin="anonymous"></script>
+<script src='http://ec2-35-166-241-225.us-west-2.compute.amazonaws.com:5000/photos-service.js' crossorigin="anonymous"></script>
+<script src='http://ec2-35-166-241-225.us-west-2.compute.amazonaws.com:5000/summary.js' crossorigin="anonymous"></script>
+
+<!-- <script src='http://localhost:5000/users.js' crossorigin="anonymous"></script>
+<script src='http://localhost:5000/bundle_availability.js' crossorigin="anonymous"></script>
+<script src='http://localhost:5000/photos-service.js' crossorigin="anonymous"></script>
+<script src='http://localhost:5000/summary.js' crossorigin="anonymous"></script>
+-->
+
+<script>
 
 
-  <script src='http://ec2-35-166-241-225.us-west-2.compute.amazonaws.com:5000/users.js' crossorigin="anonymous"></script>
-  <script src='http://ec2-35-166-241-225.us-west-2.compute.amazonaws.com:5000/bundle_availability.js' crossorigin="anonymous"></script>
-  <script src='http://ec2-35-166-241-225.us-west-2.compute.amazonaws.com:5000/photos-service.js' crossorigin="anonymous"></script>
-  <script src='http://ec2-35-166-241-225.us-west-2.compute.amazonaws.com:5000/summary.js' crossorigin="anonymous"></script>
-
-  <!-- <script src='http://localhost:5000/users.js' crossorigin="anonymous"></script>
-  <script src='http://localhost:5000/bundle_availability.js' crossorigin="anonymous"></script>
-  <script src='http://localhost:5000/photos-service.js' crossorigin="anonymous"></script>
-  <script src='http://localhost:5000/summary.js' crossorigin="anonymous"></script>
- -->
-
-  <script>
-
-
-  </script>
+</script>
 </body>
 </html>
