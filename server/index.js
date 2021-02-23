@@ -50,7 +50,7 @@ app.get('/bundle_availability.js', (req, res, next) => {
   })
   .catch((err) => {
     console.log(err, 'error getting availability bundle');
-    res.send(404);
+    res.sendStatus(404);
   })
 })
 
