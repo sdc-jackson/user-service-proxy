@@ -21,7 +21,7 @@ var PORT_PHOTOS = 5005;
 var PORT_USERS = 5007;
 var PORT_SUMMARY = 5002;
 var USE_LOCAL = false;
-var AXIOS_TIMEOUT = 5000;
+var AXIOS_TIMEOUT = 10000;
 
 var source = CancelToken.source();
 
