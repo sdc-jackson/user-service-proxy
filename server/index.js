@@ -122,7 +122,7 @@ app.get('/users.js', (req, res, next) => {
   })
 })
 
-app.get('/photos.js', (req, res, next) => {
+app.get('/photos-service.js', (req, res, next) => {
   console.log('requesting photos bundle');
   axios.get('https://react-bundles.s3.us-east-2.amazonaws.com/photos-service.js', {cancelToken: source.token})
   .then( (photosBundle) => {
