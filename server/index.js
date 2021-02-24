@@ -14,6 +14,7 @@ var exampleAvailableDates = require('./exampleData/exampleAvailableDates.js');
 var examplePhotos = require('./exampleData/examplePhotos.js');
 var exampleUser = require('./exampleData/exampleUser.js');
 var exampleSummary = require('./exampleData/exampleSummary.js');
+var exampleMorePlaces = require('./exampleData/exampleMorePlaces.js');
 
 var PORT = 5000;
 var PORT_AVAILABILITY = 5001;
@@ -33,6 +34,7 @@ AVAILABILITY_API_URL = USE_LOCAL ? `http://localhost:${PORT_AVAILABILITY}` : `ht
 USERS_API_URL = USE_LOCAL ? `http://localhost:${PORT_USERS}` : `http://ec2-34-210-111-179.us-west-2.compute.amazonaws.com:5007`;
 PHOTOS_API_URL = USE_LOCAL ? `http://localhost:${PORT_PHOTOS}` : `http://ec2-18-191-199-80.us-east-2.compute.amazonaws.com:5005`; //update later
 SUMMARY_API_URL = USE_LOCAL ? `http://localhost:${PORT_SUMMARY}` : `http://ec2-54-149-117-186.us-west-2.compute.amazonaws.com:5002`; //update later
+MORE_PLACES_API_URL = USE_LOCAL ? '' : `http://ec2-54-203-153-69.us-west-2.compute.amazonaws.com:5008`;
 
 
 var app = express();
@@ -40,6 +42,45 @@ app.use(cors());
 app.use(express.static(__dirname + '/../client/dist'));
 
 app.use('/rooms/:id', express.static(__dirname + '/../client/dist'));
+
+app.get('/header.js', (req, res, next) => {
+  console.log('requesting header bundle');
+  axios.get('https://fec-gnocchi-user-profile.s3-us-west-2.amazonaws.com/header.js', {cancelToken: source.token})
+  .then( (headerBundle) => {
+    console.log('got a request to header bundle');
+    res.send(headerBundle.data);
+  })
+  .catch((err) => {
+    console.log(err, 'error getting header bundle');
+    res.sendStatus(404);
+  })
+})
+
+app.get('/footer.js', (req, res, next) => {
+  console.log('requesting footer bundle');
+  axios.get('https://footer-bundle.s3-us-west-2.amazonaws.com/footer.js', {cancelToken: source.token})
+  .then( (footerBundle) => {
+    console.log('got a request to footer bundle');
+    res.send(footerBundle.data);
+  })
+  .catch((err) => {
+    console.log(err, 'error getting footer bundle');
+    res.sendStatus(404);
+  })
+})
+
+app.get('/places.js', (req, res, next) => {
+  console.log('requesting more places bundle');
+  axios.get('https://fec-gnocchi-user-profile.s3-us-west-2.amazonaws.com/places.js', {cancelToken: source.token})
+  .then( (placesBundle) => {
+    console.log('got a request to more places bundle');
+    res.send(placesBundle.data);
+  })
+  .catch((err) => {
+    console.log(err, 'error getting more places bundle');
+    res.sendStatus(404);
+  })
+})
 
 app.get('/bundle_availability.js', (req, res, next) => {
   console.log('requesting availability bundle');
@@ -149,6 +190,17 @@ app.get('/rooms/:id/getPhotosByRoomId', (req, res) => {
   .catch((err) => {
     console.log(err, 'could not GET photos by room id')
     res.send(examplePhotos.examplePhotos);
+  })
+})
+
+app.get('/places/:id', (req, res) => {
+  axios.get(`${MORE_PLACES_API_URL}/places/${req.params.id}`, {cancelToken: source.token})
+  .then( (placesRes) => {
+    res.send(placesRes.data);
+  })
+  .catch((err) => {
+    console.log(err, 'could not GET more places')
+    res.send(exampleMorePlaces);
   })
 })
 
