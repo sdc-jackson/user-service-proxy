@@ -35,13 +35,14 @@ USERS_API_URL = USE_LOCAL ? `http://localhost:${PORT_USERS}` : `http://ec2-34-21
 PHOTOS_API_URL = USE_LOCAL ? `http://localhost:${PORT_PHOTOS}` : `http://ec2-18-191-199-80.us-east-2.compute.amazonaws.com:5005`; //update later
 SUMMARY_API_URL = USE_LOCAL ? `http://localhost:${PORT_SUMMARY}` : `http://ec2-54-149-117-186.us-west-2.compute.amazonaws.com:5002`; //update later
 MORE_PLACES_API_URL = USE_LOCAL ? '' : `http://ec2-54-203-153-69.us-west-2.compute.amazonaws.com:5008`;
-
+TITLE_API_URL = USE_LOCAL ? '' : `http://ec2-18-191-199-80.us-east-2.compute.amazonaws.com:5006`;
 
 var app = express();
 app.use(cors());
 app.use(express.static(__dirname + '/../client/dist'));
 
 app.use('/rooms/:id', express.static(__dirname + '/../client/dist'));
+
 
 app.get('/header.js', (req, res, next) => {
   console.log('requesting header bundle');
@@ -52,6 +53,19 @@ app.get('/header.js', (req, res, next) => {
   })
   .catch((err) => {
     console.log(err, 'error getting header bundle');
+    res.sendStatus(404);
+  })
+})
+
+app.get('/title-service.js', (req, res, next) => {
+  console.log('requesting header bundle');
+  axios.get('https://react-bundles.s3.us-east-2.amazonaws.com/title-service.js', {cancelToken: source.token})
+  .then( (titleBundle) => {
+    console.log('got a request to title bundle');
+    res.send(titleBundle.data);
+  })
+  .catch((err) => {
+    console.log(err, 'error getting title bundle');
     res.sendStatus(404);
   })
 })
@@ -204,6 +218,16 @@ app.get('/places/:id', (req, res) => {
   })
 })
 
+app.get('/rooms/:id/title', (req, res) => {
+  axios.get(`${TITLE_API_URL}/rooms/${req.params.id}/title`, {cancelToken: source.token})
+  .then( (placesRes) => {
+    res.send(placesRes.data);
+  })
+  .catch((err) => {
+    console.log(err, 'could not GET title')
+    res.send(exampleMorePlaces);
+  })
+});
 
 console.log(`listening on port ${PORT}`);
 app.listen(PORT);
