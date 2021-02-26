@@ -114,7 +114,7 @@ app.get('/summary.js', (req, res, next) => {
   console.log('requesting summary bar bundle');
   axios.get('https://summarybundle-mockairbnb.s3-us-west-2.amazonaws.com/summary.js')
   .then( (summaryBundle) => {
-    console.log('got a request to users bundle');
+    console.log('got a request to summary bundle');
     res.send(summaryBundle.data);
   })
   .catch((err) => {
@@ -141,7 +141,7 @@ app.get('/photos-service.js', (req, res, next) => {
   console.log('requesting photos bundle');
   axios.get('https://react-bundles.s3.us-east-2.amazonaws.com/photos-service.js')
   .then( (photosBundle) => {
-    console.log('got a request to users bundle');
+    console.log('got a request to photos bundle');
     res.send(photosBundle.data);
   })
   .catch((err) => {
