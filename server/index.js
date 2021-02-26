@@ -15,6 +15,7 @@ var examplePhotos = require('./exampleData/examplePhotos.js');
 var exampleUser = require('./exampleData/exampleUser.js');
 var exampleSummary = require('./exampleData/exampleSummary.js');
 var exampleMorePlaces = require('./exampleData/exampleMorePlaces.js');
+var exampleTitle = require('./exampleData/exampleTitle.js');
 
 var PORT = 5000;
 var PORT_AVAILABILITY = 5001;
@@ -220,12 +221,12 @@ app.get('/places/:id', (req, res) => {
 
 app.get('/rooms/:id/title', (req, res) => {
   axios.get(`${TITLE_API_URL}/rooms/${req.params.id}/title`, {cancelToken: source.token})
-  .then( (placesRes) => {
-    res.send(placesRes.data);
+  .then( (titleRes) => {
+    res.send(titleRes.data);
   })
   .catch((err) => {
     console.log(err, 'could not GET title')
-    res.send(exampleMorePlaces);
+    res.send(exampleTitle);
   })
 });
 
