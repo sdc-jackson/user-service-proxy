@@ -3,7 +3,7 @@ var bodyParser = require('body-parser');
 var cors = require('cors');
 var path = require('path');
 var axios = require('axios');
-const CancelToken = axios.CancelToken;
+//const CancelToken = axios.CancelToken;
 require('dotenv');
 
 
@@ -23,13 +23,13 @@ var PORT_PHOTOS = 5005;
 var PORT_USERS = 5007;
 var PORT_SUMMARY = 5002;
 var USE_LOCAL = false;
-var AXIOS_TIMEOUT = 10000;
+// var AXIOS_TIMEOUT = 100000;
 
-var source = CancelToken.source();
+// var source = CancelToken.source();
 
-setTimeout(() => {
-  source.cancel();
-}, AXIOS_TIMEOUT);
+// setTimeout(() => {
+//   source.cancel();
+// }, AXIOS_TIMEOUT);
 
 AVAILABILITY_API_URL = USE_LOCAL ? `http://localhost:${PORT_AVAILABILITY}` : `http://ec2-54-149-117-186.us-west-2.compute.amazonaws.com:5001`;
 USERS_API_URL = USE_LOCAL ? `http://localhost:${PORT_USERS}` : `http://ec2-34-210-111-179.us-west-2.compute.amazonaws.com:5007`;
@@ -47,7 +47,7 @@ app.use('/rooms/:id', express.static(__dirname + '/../client/dist'));
 
 app.get('/header.js', (req, res, next) => {
   console.log('requesting header bundle');
-  axios.get('https://fec-gnocchi-user-profile.s3-us-west-2.amazonaws.com/header.js', {cancelToken: source.token})
+  axios.get('https://fec-gnocchi-user-profile.s3-us-west-2.amazonaws.com/header.js')
   .then( (headerBundle) => {
     console.log('got a request to header bundle');
     res.send(headerBundle.data);
@@ -60,7 +60,7 @@ app.get('/header.js', (req, res, next) => {
 
 app.get('/title-service.js', (req, res, next) => {
   console.log('requesting header bundle');
-  axios.get('https://react-bundles.s3.us-east-2.amazonaws.com/title-service.js', {cancelToken: source.token})
+  axios.get('https://react-bundles.s3.us-east-2.amazonaws.com/title-service.js')
   .then( (titleBundle) => {
     console.log('got a request to title bundle');
     res.send(titleBundle.data);
@@ -73,7 +73,7 @@ app.get('/title-service.js', (req, res, next) => {
 
 app.get('/footer.js', (req, res, next) => {
   console.log('requesting footer bundle');
-  axios.get('https://footer-bundle.s3-us-west-2.amazonaws.com/footer.js', {cancelToken: source.token})
+  axios.get('https://footer-bundle.s3-us-west-2.amazonaws.com/footer.js')
   .then( (footerBundle) => {
     console.log('got a request to footer bundle');
     res.send(footerBundle.data);
@@ -86,7 +86,7 @@ app.get('/footer.js', (req, res, next) => {
 
 app.get('/places.js', (req, res, next) => {
   console.log('requesting more places bundle');
-  axios.get('https://fec-gnocchi-user-profile.s3-us-west-2.amazonaws.com/places.js', {cancelToken: source.token})
+  axios.get('https://fec-gnocchi-user-profile.s3-us-west-2.amazonaws.com/places.js')
   .then( (placesBundle) => {
     console.log('got a request to more places bundle');
     res.send(placesBundle.data);
@@ -99,7 +99,7 @@ app.get('/places.js', (req, res, next) => {
 
 app.get('/bundle_availability.js', (req, res, next) => {
   console.log('requesting availability bundle');
-  axios.get('https://availability-bundle.s3-us-west-2.amazonaws.com/bundle_availability.js', {cancelToken: source.token})
+  axios.get('https://availability-bundle.s3-us-west-2.amazonaws.com/bundle_availability.js')
   .then( (availabilityBundle) => {
     console.log('got a request to availability bundle');
     res.send(availabilityBundle.data);
@@ -112,7 +112,7 @@ app.get('/bundle_availability.js', (req, res, next) => {
 
 app.get('/summary.js', (req, res, next) => {
   console.log('requesting summary bar bundle');
-  axios.get('https://summarybundle-mockairbnb.s3-us-west-2.amazonaws.com/summary.js', {cancelToken: source.token})
+  axios.get('https://summarybundle-mockairbnb.s3-us-west-2.amazonaws.com/summary.js')
   .then( (summaryBundle) => {
     console.log('got a request to users bundle');
     res.send(summaryBundle.data);
@@ -125,7 +125,7 @@ app.get('/summary.js', (req, res, next) => {
 
 app.get('/users.js', (req, res, next) => {
   console.log('requesting users bundle');
-  axios.get('https://fec-gnocchi-user-profile.s3-us-west-2.amazonaws.com/users.js', {cancelToken: source.token})
+  axios.get('https://fec-gnocchi-user-profile.s3-us-west-2.amazonaws.com/users.js')
   .then( (usersBundle) => {
     console.log('got a request to users bundle');
     res.send(usersBundle.data);
@@ -139,7 +139,7 @@ app.get('/users.js', (req, res, next) => {
 
 app.get('/photos-service.js', (req, res, next) => {
   console.log('requesting photos bundle');
-  axios.get('https://react-bundles.s3.us-east-2.amazonaws.com/photos-service.js', {cancelToken: source.token})
+  axios.get('https://react-bundles.s3.us-east-2.amazonaws.com/photos-service.js')
   .then( (photosBundle) => {
     console.log('got a request to users bundle');
     res.send(photosBundle.data);
@@ -152,7 +152,7 @@ app.get('/photos-service.js', (req, res, next) => {
 })
 
 app.get('/rooms/:id/availableDates', (req, res) => {
-  axios.get(`${AVAILABILITY_API_URL}/rooms/${req.params.id}/availableDates`, {cancelToken: source.token})
+  axios.get(`${AVAILABILITY_API_URL}/rooms/${req.params.id}/availableDates`)
   .then( (availableDatesRes) => {
     res.send(availableDatesRes.data);
   })
@@ -163,7 +163,7 @@ app.get('/rooms/:id/availableDates', (req, res) => {
 });
 
 app.get('/rooms/:id/minNightlyRate', (req, res) => {
-  axios.get(`${AVAILABILITY_API_URL}/rooms/${req.params.id}/minNightlyRate`, {cancelToken: source.token})
+  axios.get(`${AVAILABILITY_API_URL}/rooms/${req.params.id}/minNightlyRate`)
   .then( (minRateRes) => {
     res.send(minRateRes.data);
   })
@@ -174,7 +174,7 @@ app.get('/rooms/:id/minNightlyRate', (req, res) => {
 })
 
 app.get('/users/:id/', (req, res) => {
-  axios.get(`${USERS_API_URL}/users/${req.params.id}`, {cancelToken: source.token})
+  axios.get(`${USERS_API_URL}/users/${req.params.id}`)
   .then( (usersRes) => {
     res.send(usersRes.data);
   })
@@ -187,7 +187,7 @@ app.get('/users/:id/', (req, res) => {
 
 
 app.get('/rooms/:id/summary', (req, res) => {
-  axios.get(`${SUMMARY_API_URL}/rooms/${req.params.id}/summary`, {cancelToken: source.token})
+  axios.get(`${SUMMARY_API_URL}/rooms/${req.params.id}/summary`)
   .then( (summaryRes) => {
     res.send(summaryRes.data);
   })
@@ -198,7 +198,7 @@ app.get('/rooms/:id/summary', (req, res) => {
 })
 
 app.get('/rooms/:id/getPhotosByRoomId', (req, res) => {
-  axios.get(`${PHOTOS_API_URL}/rooms/${req.params.id}/getPhotosByRoomId`, {cancelToken: source.token})
+  axios.get(`${PHOTOS_API_URL}/rooms/${req.params.id}/getPhotosByRoomId`)
   .then( (photosRes) => {
     res.send(photosRes.data);
   })
@@ -209,7 +209,7 @@ app.get('/rooms/:id/getPhotosByRoomId', (req, res) => {
 })
 
 app.get('/places/:id', (req, res) => {
-  axios.get(`${MORE_PLACES_API_URL}/places/${req.params.id}`, {cancelToken: source.token})
+  axios.get(`${MORE_PLACES_API_URL}/places/${req.params.id}`)
   .then( (placesRes) => {
     res.send(placesRes.data);
   })
@@ -220,7 +220,7 @@ app.get('/places/:id', (req, res) => {
 })
 
 app.get('/rooms/:id/title', (req, res) => {
-  axios.get(`${TITLE_API_URL}/rooms/${req.params.id}/title`, {cancelToken: source.token})
+  axios.get(`${TITLE_API_URL}/rooms/${req.params.id}/title`)
   .then( (titleRes) => {
     res.send(titleRes.data);
   })
