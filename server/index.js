@@ -137,9 +137,9 @@ app.get('/users.js', (req, res, next) => {
   })
 })
 
-app.get('/photos-service.js', (req, res, next) => {
+app.get('/photos-service-v2.js', (req, res, next) => {
   console.log('requesting photos bundle');
-  axios.get('https://react-bundles.s3.us-east-2.amazonaws.com/photos-service.js')
+  axios.get('https://react-bundles.s3.us-east-2.amazonaws.com/photos-service-v2.js')
   .then( (photosBundle) => {
     console.log('got a request to photos bundle');
     res.send(photosBundle.data);
