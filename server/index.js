@@ -223,6 +223,7 @@ app.get('/rooms/:id/title', (req, res) => {
   axios.get(`${TITLE_API_URL}/rooms/${req.params.id}/title`)
   .then( (titleRes) => {
     res.send(titleRes.data);
+    console.log('SENDING TITLE: ', titleRes.data);
   })
   .catch((err) => {
     console.log(err, 'could not GET title')
