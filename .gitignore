@@ -7,3 +7,5 @@ package-lock.json
 *2.woff
 newrelic.js
 newrelic_agent.log
+*.pem
+loginProxy.sh

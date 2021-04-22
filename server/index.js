@@ -4,9 +4,13 @@ var bodyParser = require('body-parser');
 var cors = require('cors');
 var path = require('path');
 var axios = require('axios');
+const redis = require('redis');
 //const CancelToken = axios.CancelToken;
 require('dotenv');
-
+const redisClient = redis.createClient(6379);
+redisClient.on("error", (error) => {
+  console.error(error);
+});
 
 var exampleAvailableDates = require('./exampleData/exampleAvailableDates.js');
 var examplePhotos = require('./exampleData/examplePhotos.js');
@@ -30,7 +34,7 @@ var USE_LOCAL = true;
 // }, AXIOS_TIMEOUT);
 
 // AVAILABILITY_API_URL = USE_LOCAL ? `http://localhost:${PORT_AVAILABILITY}` : `http://ec2-54-149-117-186.us-west-2.compute.amazonaws.com:5001`;
-USERS_API_URL = USE_LOCAL ? `http://localhost:${PORT_USERS}` : `http://ec2-52-24-37-226.us-west-2.compute.amazonaws.com:5007`;
+USERS_API_URL = USE_LOCAL ? `http://localhost:${PORT_USERS}` : `http://ec2-3-80-102-218.compute-1.amazonaws.com:5007`;
 // PHOTOS_API_URL = USE_LOCAL ? `http://localhost:${PORT_PHOTOS}` : `http://ec2-18-191-199-80.us-east-2.compute.amazonaws.com:5005`; //update later
 // SUMMARY_API_URL = USE_LOCAL ? `http://localhost:${PORT_SUMMARY}` : `http://ec2-54-149-117-186.us-west-2.compute.amazonaws.com:5002`; //update later
 // MORE_PLACES_API_URL = USE_LOCAL ? '' : `http://ec2-54-203-153-69.us-west-2.compute.amazonaws.com:5008`;
@@ -120,6 +124,7 @@ app.use('/rooms/:id', express.static(__dirname + '/../client/dist'));
 //   })
 // })
 
+//without caching
 app.get('/users.js', (req, res, next) => {
   console.log('requesting users bundle');
   //axios.get('https://fec-gnocchi-user-profile.s3-us-west-2.amazonaws.com/users.js')
@@ -134,6 +139,28 @@ app.get('/users.js', (req, res, next) => {
 
     })
 })
+
+// app.get('/users.js', (req, res, next) => {
+//   console.log('requesting users bundle');
+//   //axios.get('https://fec-gnocchi-user-profile.s3-us-west-2.amazonaws.com/users.js')
+//   redisClient.get(userInfo, async (err, userBundle) => {
+//     if (userBundle) {
+//       console.log('usersBundle.data cache2: ', userBundle.data);
+//       return res.status(200).send(userBundle.data);
+//     } else {
+//       console.log('usersBundle.data cache3: ');
+//       axios.get('http://localhost:5007/users.js')
+//         .then((usersBundle) => {
+//           userBundle = usersBundle;
+//           console.log('got a request to users bundle');
+//           res.send(userBundle.data);
+//         })
+//         .catch((err) => {
+//           console.log(err, 'error getting users bundle');
+//           res.sendStatus(404);
+//         })
+//     });
+// })
 
 // app.get('/photos-service-v2.js', (req, res, next) => {
 //   console.log('requesting photos bundle');
@@ -171,16 +198,49 @@ app.get('/users.js', (req, res, next) => {
 //   })
 // })
 
+//without caching
+// app.get('/users/:id/', (req, res) => {
+//   axios.get(`${USERS_API_URL}/users/${req.params.id}`)
+//     .then((usersRes) => {
+//       res.send(usersRes.data);
+//     })
+//     .catch((err) => {
+//       console.log(err)
+//       console.log('could not GET user data');
+//       res.send(exampleUser.exampleUser);
+//     })
+// })
+
+//with caching
 app.get('/users/:id/', (req, res) => {
-  axios.get(`${USERS_API_URL}/users/${req.params.id}`)
-    .then((usersRes) => {
-      res.send(usersRes.data);
-    })
-    .catch((err) => {
-      console.log(err)
-      console.log('could not GET user data');
-      res.send(exampleUser.exampleUser);
-    })
+  //console.log('user/id called');
+  let userID = req.params.id;
+
+  redisClient.get(userID, async (err, userInfo) => {
+
+    if (userInfo) {
+      //console.log('userInfo cache2: ', userInfo);
+      return res.status(200).send(JSON.parse(userInfo));
+    } else {
+      //console.log('userInfo cache3: ');
+      axios.get(`${USERS_API_URL}/users/${userID}`)
+        .then((usersRes) => {
+          //console.log('userInfo cache4: ', userInfo.data);
+          userInfo = usersRes;
+          redisClient.setex(userID, 1440, JSON.stringify(userInfo));
+          res.send(userInfo.data);
+        })
+        .catch((err) => {
+          console.log(err)
+          console.log('could not GET user data');
+          res.send(exampleUser.exampleUser);
+        })
+
+    }
+
+  })
+
+
 })
 
 app.post('/rooms/insertOwner', (req, res) => {

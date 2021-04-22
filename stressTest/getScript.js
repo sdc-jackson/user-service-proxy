@@ -17,7 +17,7 @@ export let options = {
 
 export default function () {
 
-  var id = 9999993;
+  var id = 9999991;
   let res = http.get(`http://localhost:5000/rooms/${id}`);
   check(res, { 'status was 200': (r) => r.status == 200 });
 
