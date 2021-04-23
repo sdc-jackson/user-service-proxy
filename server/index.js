@@ -4,13 +4,13 @@ var bodyParser = require('body-parser');
 var cors = require('cors');
 var path = require('path');
 var axios = require('axios');
-const redis = require('redis');
+//const redis = require('redis');
 //const CancelToken = axios.CancelToken;
 require('dotenv');
-const redisClient = redis.createClient(6379);
-redisClient.on("error", (error) => {
-  console.error(error);
-});
+// const redisClient = redis.createClient(6379);
+// redisClient.on("error", (error) => {
+//   console.error(error);
+// });
 
 var exampleAvailableDates = require('./exampleData/exampleAvailableDates.js');
 var examplePhotos = require('./exampleData/examplePhotos.js');
@@ -199,49 +199,49 @@ app.get('/users.js', (req, res, next) => {
 // })
 
 //without caching
-// app.get('/users/:id/', (req, res) => {
-//   axios.get(`${USERS_API_URL}/users/${req.params.id}`)
-//     .then((usersRes) => {
-//       res.send(usersRes.data);
-//     })
-//     .catch((err) => {
-//       console.log(err)
-//       console.log('could not GET user data');
-//       res.send(exampleUser.exampleUser);
-//     })
-// })
+app.get('/users/:id/', (req, res) => {
+  axios.get(`${USERS_API_URL}/users/${req.params.id}`)
+    .then((usersRes) => {
+      res.send(usersRes.data);
+    })
+    .catch((err) => {
+      console.log(err)
+      console.log('could not GET user data');
+      res.send(exampleUser.exampleUser);
+    })
+})
 
 //with caching
-app.get('/users/:id/', (req, res) => {
-  //console.log('user/id called');
-  let userID = req.params.id;
+// app.get('/users/:id/', (req, res) => {
+//   //console.log('user/id called');
+//   let userID = req.params.id;
 
-  redisClient.get(userID, async (err, userInfo) => {
+//   redisClient.get(userID, async (err, userInfo) => {
 
-    if (userInfo) {
-      //console.log('userInfo cache2: ', userInfo);
-      return res.status(200).send(JSON.parse(userInfo));
-    } else {
-      //console.log('userInfo cache3: ');
-      axios.get(`${USERS_API_URL}/users/${userID}`)
-        .then((usersRes) => {
-          //console.log('userInfo cache4: ', userInfo.data);
-          userInfo = usersRes;
-          redisClient.setex(userID, 1440, JSON.stringify(userInfo));
-          res.send(userInfo.data);
-        })
-        .catch((err) => {
-          console.log(err)
-          console.log('could not GET user data');
-          res.send(exampleUser.exampleUser);
-        })
+//     if (userInfo) {
+//       //console.log('userInfo cache2: ', userInfo);
+//       return res.status(200).send(JSON.parse(userInfo));
+//     } else {
+//       //console.log('userInfo cache3: ');
+//       axios.get(`${USERS_API_URL}/users/${userID}`)
+//         .then((usersRes) => {
+//           //console.log('userInfo cache4: ', userInfo.data);
+//           userInfo = usersRes;
+//           redisClient.setex(userID, 1440, JSON.stringify(userInfo));
+//           res.send(userInfo.data);
+//         })
+//         .catch((err) => {
+//           console.log(err)
+//           console.log('could not GET user data');
+//           res.send(exampleUser.exampleUser);
+//         })
 
-    }
+//     }
 
-  })
+//   })
 
 
-})
+// })
 
 app.post('/rooms/insertOwner', (req, res) => {
   console.log('req.body: ', req.body);
