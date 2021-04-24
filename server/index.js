@@ -24,7 +24,9 @@ var PORT_AVAILABILITY = 5001;
 var PORT_PHOTOS = 5005;
 var PORT_USERS = 5007;
 var PORT_SUMMARY = 5002;
+var PORT_LOADBAL = 5008;
 var USE_LOCAL = true;
+
 // var AXIOS_TIMEOUT = 100000;
 
 // var source = CancelToken.source();
@@ -34,7 +36,8 @@ var USE_LOCAL = true;
 // }, AXIOS_TIMEOUT);
 
 // AVAILABILITY_API_URL = USE_LOCAL ? `http://localhost:${PORT_AVAILABILITY}` : `http://ec2-54-149-117-186.us-west-2.compute.amazonaws.com:5001`;
-USERS_API_URL = USE_LOCAL ? `http://localhost:${PORT_USERS}` : `http://ec2-3-80-102-218.compute-1.amazonaws.com:5007`;
+// USERS_API_URL = USE_LOCAL ? `http://localhost:${PORT_USERS}` : `http://ec2-3-80-102-218.compute-1.amazonaws.com:5007`;
+USERS_API_URL = USE_LOCAL ? `http://localhost:${PORT_LOADBAL}` : `http://ec2-54-224-71-142.compute-1.amazonaws.com:5007`;
 // PHOTOS_API_URL = USE_LOCAL ? `http://localhost:${PORT_PHOTOS}` : `http://ec2-18-191-199-80.us-east-2.compute.amazonaws.com:5005`; //update later
 // SUMMARY_API_URL = USE_LOCAL ? `http://localhost:${PORT_SUMMARY}` : `http://ec2-54-149-117-186.us-west-2.compute.amazonaws.com:5002`; //update later
 // MORE_PLACES_API_URL = USE_LOCAL ? '' : `http://ec2-54-203-153-69.us-west-2.compute.amazonaws.com:5008`;
@@ -128,7 +131,8 @@ app.use('/rooms/:id', express.static(__dirname + '/../client/dist'));
 app.get('/users.js', (req, res, next) => {
   console.log('requesting users bundle');
   //axios.get('https://fec-gnocchi-user-profile.s3-us-west-2.amazonaws.com/users.js')
-  axios.get('http://localhost:5007/users.js')
+  //axios.get('http://localhost:5007/users.js')
+  axios.get('http://localhost:5008/users.js')
     .then((usersBundle) => {
       console.log('got a request to users bundle');
       res.send(usersBundle.data);
@@ -200,6 +204,7 @@ app.get('/users.js', (req, res, next) => {
 
 //without caching
 app.get('/users/:id/', (req, res) => {
+  console.log('USERS_API_URL', USERS_API_URL);
   axios.get(`${USERS_API_URL}/users/${req.params.id}`)
     .then((usersRes) => {
       res.send(usersRes.data);
